@@ -1,0 +1,160 @@
+/* For mobile devices, mobile first approach! */
+.main-background {
+    /* ff 3.6+ */
+    background:-moz-radial-gradient(circle at 0% 100%, rgba(238, 130, 238, 1) 0%, rgba(0, 188, 212, 1) 53%, rgba(53, 53, 198, 1) 85%);
+
+    /* safari 5.1+,chrome 10+ */
+    background:-webkit-radial-gradient(circle at 0% 100%, rgba(238, 130, 238, 1) 0%, rgba(0, 188, 212, 1) 53%, rgba(53, 53, 198, 1) 85%);
+
+    /* opera 11.10+ */
+    background:-o-radial-gradient(circle at 0% 100%, rgba(238, 130, 238, 1) 0%, rgba(0, 188, 212, 1) 53%, rgba(53, 53, 198, 1) 85%);
+
+    /* ie 10+ */
+    background:-ms-radial-gradient(circle at 0% 100%, rgba(238, 130, 238, 1) 0%, rgba(0, 188, 212, 1) 53%, rgba(53, 53, 198, 1) 85%);
+
+    /* global 92%+ browsers support */
+    background:radial-gradient(circle at 0% 100%, rgba(238, 130, 238, 1) 0%, rgba(0, 188, 212, 1) 53%, rgba(53, 53, 198, 1) 85%);
+}
+
+.row-flex {
+    display: flex;
+    flex-direction: row;
+}
+
+.col-flex {
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    margin: auto;
+    height: 100vh;
+}
+
+.disp-info {
+    background-color: rgb(238, 238, 238);
+    width: 100vw;
+    height: 100vh;
+    margin: auto;
+}
+
+.width-84 {
+    width: 84%;
+    margin: 0 auto;
+}
+
+.app-brief {
+    font-family: system-ui;
+}
+
+.show-chat {
+    margin: 2rem auto;
+}
+
+.send {
+    background-color: #3535c6;
+    font-weight: bold;
+    border-radius: 14px;
+    border: none;
+    color: whitesmoke;
+    height: 28px;
+    padding: 0 1rem;
+    margin: 0 auto;
+}
+
+.send:hover {
+    cursor: pointer;
+    background-color: #222292;
+}
+
+.disp-chat {
+    height: 100vh;
+    margin: auto;
+}
+
+.disp-window {
+    margin: 1rem auto;
+    height: 70vh;
+    width: 82%;
+}
+
+.typing {
+    width: 82%;
+    margin: 1rem auto;
+}
+
+.input-text {
+    width: 78%;
+    height: 26px;
+    border: none;
+    border-radius: 14px;
+    padding-left: 10px;
+    background-color: rgb(230, 230, 230);
+    margin: 0 auto;
+}
+
+.username {
+    padding-top: 3rem;
+}
+
+.msg-window {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 1.5rem;
+    background-color: rgb(227, 230, 233);
+    /* For Firefox browser */
+    scrollbar-color: #3535c6 aliceblue;
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+}
+
+.message {
+    margin-top: 1.8rem;
+}
+
+.position-right {
+    float: right;
+    background-color: #5454c5 !important;
+    color: white;
+}
+
+.position-left {
+    color: white;
+}
+
+.message-field {
+    min-height: 3rem;
+    width: 70%;
+    background-color: #639cd9;
+    padding: 1rem;
+    border-radius: 16px;
+}
+
+.message-user {
+    font-weight: bold;
+    color: #bed5ff;
+}
+
+.scrollable {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* For desktop devices */
+@media only screen and (min-width: 600px) {
+    .disp-info {
+        max-width: 55vw;
+        height: 80vh;
+        box-shadow: 10px 10px 5px grey;
+    }
+
+    .disp-chat {
+        width: 72vw;
+        height: 100vh;
+    }
+
+    .message-field {
+        width: 40%;
+    }
+}

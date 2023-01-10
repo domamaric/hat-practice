@@ -1,0 +1,47 @@
+---
+type: gui
+log:
+    version: 1
+    formatters:
+        console_formatter:
+            format: "[%(asctime)s %(levelname)s %(name)s] %(message)s"
+    handlers:
+        console_handler:
+            class: logging.StreamHandler
+            formatter: console_formatter
+            level: DEBUG
+    root:
+        level: INFO
+        handlers: ['console_handler']
+    disable_existing_loggers: false
+event_server_address: 'tcp+sbs://localhost:23012'
+adapters:
+  - name: server
+    module: server
+    authorized_roles:
+      - admin
+views:
+  - name: login
+    view_path: ./build/login
+    conf_path: null
+  - name: chat
+    view_path: ./build/chat
+    conf_path: null
+address: 'http://0.0.0.0:23023'
+initial_view: login
+users:
+  - name: gandalf
+    password:  # pass1
+        hash: '4f51b0a300aeadf7f13d87e43eb48f8d95149efa7dde614194b4aa1e116bf078'
+        salt: 'a8534416dc3caca0ec6f4f1a298ead2c'
+    roles:
+        - admin
+    view: chat
+  - name: saruman
+    password:  # pass1
+        hash: '4f51b0a300aeadf7f13d87e43eb48f8d95149efa7dde614194b4aa1e116bf078'
+        salt: 'a8534416dc3caca0ec6f4f1a298ead2c'
+    roles:
+        - admin
+    view: chat
+...
