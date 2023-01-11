@@ -151,8 +151,8 @@ class Session(gc.AdapterSession):
     async def _run(self):
         r"""While `true` loop, receive and register messages to event server."""
         try:
-            self._on_state_change()  # Necessary for initial chat log
-            with self._adapter.subscribe_to_state_change(self._on_state_change):
+            self._message_received()  # Necessary for initial chat log
+            with self._adapter.subscribe_to_state_change(self._message_received):
                 while True:
                     msg = await self._juggler_client.receive()
                     self._adapter.send_message_text(msg)
@@ -160,6 +160,6 @@ class Session(gc.AdapterSession):
         except Exception as e:
             await self.wait_closing()
 
-    def _on_state_change(self):
+    def _message_received(self):
         r"""Provide adapter's state to frontend."""
         self._juggler_client.set_local_data(self._adapter._state)
