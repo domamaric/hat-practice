@@ -102,7 +102,9 @@ class Adapter(gc.Adapter):
     async def _main_loop(self):
         r"""Query older data to state and constantly append received data."""
         history = await self._event_client.query(
-            common.QueryData(event_types=[('message', )])
+            common.QueryData(event_types=[('message', )],
+                            order_by=ec.OrderBy.TIMESTAMP,
+                            order=ec.Order.ASCENDING)
         )
         text_history = list(map(lambda x: x.payload.data, history))
         self._state = self._state + text_history  # Append history to current state
