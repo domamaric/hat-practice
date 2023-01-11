@@ -16,7 +16,7 @@ $ npm install
 
 Webpack is used to bundle frontend together. After first run change webpack.config.js' 6th and 10th line to input and output files from src_js/login and build/login instead of src_js/chat and build/chat.
 ```
-$ ./node_modules/.bin/webpack --config webpack.config.js
+$ npm run build
 ```
 
 Starting event and GUI servers as binaries like shown (order of commands matters).
