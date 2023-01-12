@@ -1,18 +1,17 @@
-"""Module for receiver adapter used for communication with frontend server.
+"""Module for custom receiver adapter.
 
-Mainly used to communicate with ``hat-gui`` server in order to send and
-receive information from users' inputs.
+Adapter supports two-way communication, towards frontend (``hat-gui``) 
+and backend (``hat-event``) servers.
 
 Notes
 -----
-Do not forget to setup PYTHONPATH, but not to override the current. 
-Usage ``$ export PYTHONPATH=$PYTHONPATH:dir_name``.
+Do not forget to setup PYTHONPATH, but not to override the current.
+Usage ``$ export PYTHONPATH=$PYTHONPATH:src_py``.
 
 """
 
 from hat.aio import Group
 from hat.util import CallbackRegistry
-from hat.event import common
 
 import hat.event.common as ec
 import hat.gui.common as gc
@@ -24,29 +23,30 @@ json_schema_repo = None
 
 
 async def create_subscription(conf):
-    r"""Subscribes provided event onto event server.
+    r"""Provide message event subscription onto ``hat-event`` server.
 
     Returns
     -------
     `hat.event.common.Subscription`
-        Subscription to event
+        Subscription to message event.
 
     """
     return ec.Subscription([('message',)])
 
 
 async def create_adapter(conf, event_client):
-    r"""Creates new adapter instance.
+    r"""Creates custom adapter instance.
 
-    Method is used as constructor, which takes `conf` to specity adapter configuration.
-    But it is easier to hardcode default values since this is dummy version.
+    Method is used as constructor, which takes `conf` to specity adapter
+    configuration. But it is easier to hardcode default values since this
+    is dummy version.
 
     Parameters
     ----------
     conf : JSON object
-        JSON like adapter configuration. Defaults to `None`
+        JSON like adapter configuration. Defaults to `None`.
     event_client : 
-        Link to event server client
+        Link to event server client.
 
     Returns
     -------
@@ -65,7 +65,11 @@ async def create_adapter(conf, event_client):
 
 
 class Adapter(gc.Adapter):
-    r"""Instance of `gat.gui.common.Adapter`.
+    r"""Instance of `hat.gui.common.Adapter`.
+
+    Adapter constantly runs main loop which initially runs data query
+    to fetch stored messages. Afterwards, register received messages and
+    notify frontend.
 
     Attributes
     ----------
@@ -96,18 +100,18 @@ class Adapter(gc.Adapter):
         return self._state_change_cb_registry.register(callback)
 
     async def create_session(self, juggler_client):
-        r"""Create new juggler connection in adapters's group."""
+        r"""Create new juggler connection session in adapters's group."""
         return Session(self, juggler_client, self._async_group.create_subgroup())
 
     async def _main_loop(self):
-        r"""Query older data to state and constantly append received data."""
+        r"""Fetch from backend and register messages to frontend."""
         history = await self._event_client.query(
-            common.QueryData(event_types=[('message', )],
-                            order_by=ec.OrderBy.TIMESTAMP,
-                            order=ec.Order.ASCENDING)
+            ec.QueryData(event_types=[('message', )],
+                             order_by=ec.OrderBy.TIMESTAMP,
+                             order=ec.Order.ASCENDING)
         )
         text_history = list(map(lambda x: x.payload.data, history))
-        self._state = self._state + text_history  # Append history to current state
+        self._state = self._state + text_history  # Append history to state
 
         while True:
             events = await self._event_client.receive()
@@ -116,9 +120,9 @@ class Adapter(gc.Adapter):
                 self._state_change_cb_registry.notify()
 
     def send_message_text(self, text_message):
-        r"""Register event containing message to eventer server."""
+        r"""Store message text by sending it to ``hat-event`` server."""
         self._event_client.register([ec.RegisterEvent(event_type=('message',),
-                                    source_timestamp=common.now(),
+                                    source_timestamp=ec.now(),
                                     payload=ec.EventPayload(
                                         type=ec.EventPayloadType.JSON,
                                         data=text_message))])
@@ -126,6 +130,10 @@ class Adapter(gc.Adapter):
 
 class Session(gc.AdapterSession):
     r"""Instance of juggler client session.
+
+    Session spawns initial message log onto frontend. Afterwards wait
+    for user's input, than propagate it to adapter for satoring in
+    database.
 
     Attributes
     ----------
@@ -149,7 +157,7 @@ class Session(gc.AdapterSession):
         return self._async_group
 
     async def _run(self):
-        r"""While `true` loop, receive and register messages to event server."""
+        r"""Provides message log and connection to adapter."""
         try:
             self._message_received()  # Necessary for initial chat log
             with self._adapter.subscribe_to_state_change(self._message_received):
